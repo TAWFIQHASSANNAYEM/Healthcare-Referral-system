@@ -1,0 +1,68 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Hospital Referrals{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-list"></i> Received Referrals</h4>
+                </div>
+                <div class="card-body">
+                    {% if referrals %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Age</th>
+                                    <th>Department</th>
+                                    <th>Emergency</th>
+                                    <th>Referred By</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for referral in referrals %}
+                                <tr>
+                                    <td>{{ referral.patient_name }}</td>
+                                    <td>{{ referral.patient_age }}</td>
+                                    <td>{{ referral.get_department_display }}</td>
+                                    <td>
+                                        {% if referral.emergency_level == 0 %}
+                                        <span class="badge bg-secondary">Non-emergency</span>
+                                        {% elif referral.emergency_level == 1 %}
+                                        <span class="badge bg-warning">Level 1</span>
+                                        {% elif referral.emergency_level == 2 %}
+                                        <span class="badge bg-danger">Level 2</span>
+                                        {% else %}
+                                        <span class="badge bg-dark">Level 3</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ referral.gp.get_full_name }}</td>
+                                    <td>{{ referral.created_at|date:"M d, Y H:i" }}</td>
+                                    <td>
+                                        <a href="{% url 'referral_detail' referral.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No referrals received yet</h5>
+                        <p class="text-muted">Referrals from GPs will appear here.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+Django>=6.0
+djangorestframework>=3.14
+psycopg2-binary>=2.9
+gunicorn>=21.0
+python-decouple>=3.8
+dj-database-url>=2.1

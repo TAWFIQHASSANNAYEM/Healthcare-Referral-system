@@ -1,0 +1,94 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Profile - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-user icon"></i>Profile Management</h4>
+                <p class="text-muted">Update your personal information</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <h5 class="mb-3">Basic Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" readonly>
+                            <small class="text-muted">Username cannot be changed</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="{{ user.phone }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3">{{ user.address }}</textarea>
+                    </div>
+
+                    {% if user.role == 'gp' %}
+                    <h5 class="mb-3">Professional Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="license_number" class="form-label">Medical License Number</label>
+                            <input type="text" class="form-control" id="license_number" name="license_number" value="{{ user.gp_profile.license_number }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="specialization" class="form-label">Specialization</label>
+                            <input type="text" class="form-control" id="specialization" name="specialization" value="{{ user.gp_profile.specialization }}">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="assigned_upazila" class="form-label">Assigned Upazila</label>
+                            <input type="text" class="form-control" id="assigned_upazila" name="assigned_upazila" value="{{ user.gp_profile.assigned_upazila }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="assigned_district" class="form-label">Assigned District</label>
+                            <input type="text" class="form-control" id="assigned_district" name="assigned_district" value="{{ user.gp_profile.assigned_district }}" required>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid mt-4 mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">Update Profile</button>
+                    </div>
+                </form>
+
+                <hr>
+                <div class="text-center">
+                    {% if user.role == 'gp' %}
+                        <a href="{% url 'gp_dashboard' %}" class="btn btn-outline-secondary">Back to GP Dashboard</a>
+                    {% elif user.role == 'hospital' %}
+                        <a href="{% url 'hospital_dashboard' %}" class="btn btn-outline-secondary">Back to Hospital Dashboard</a>
+                    {% elif user.role == 'admin' %}
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">Back to Admin Dashboard</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

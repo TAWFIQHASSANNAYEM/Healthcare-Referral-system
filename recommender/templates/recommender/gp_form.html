@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Referral System - Bangladesh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header { background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 2rem 0; text-align: center; border-radius: 10px; margin-bottom: 2rem; }
+        .card { border: none; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-primary { background: linear-gradient(135deg, #28a745, #20c997); border: none; border-radius: 25px; padding: 0.75rem 2rem; }
+        .btn-primary:hover { background: linear-gradient(135deg, #218838, #1aa085); }
+        .form-control { border-radius: 10px; border: 2px solid #e9ecef; }
+        .form-control:focus { border-color: #007bff; box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25); }
+        .hospital-card { background: white; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .alert { border-radius: 10px; }
+        .icon { color: #007bff; margin-right: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="header">
+            <h1><i class="fas fa-hospital-alt icon"></i>Healthcare Referral System</h1>
+            <p>Find the best facility for your patient in Bangladesh</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="department" class="form-label"><i class="fas fa-stethoscope icon"></i>Department</label>
+                            <select name="department" id="department" class="form-select" required>
+                                {% for d in departments %}
+                                    <option value="{{ d }}">{{ d|title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="upazila" class="form-label"><i class="fas fa-map-marker-alt icon"></i>Patient Location</label>
+                            <input type="text" name="upazila" id="upazila" class="form-control" placeholder="Enter Upazila or Thana" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="emergency_level" class="form-label"><i class="fas fa-exclamation-triangle icon"></i>Emergency Level</label>
+                            <select name="emergency_level" id="emergency_level" class="form-select">
+                                <option value="0">Normal</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i> Find Hospitals</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger mt-4" role="alert">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if results %}
+            <div class="mt-5">
+                <h2 class="text-center mb-4"><i class="fas fa-list icon"></i>Recommended Hospitals</h2>
+                <div class="row">
+                    {% for r in results %}
+                        <div class="col-md-6 mb-3">
+                            <div class="hospital-card">
+                                <h5><i class="fas fa-hospital icon"></i>{{ r.hospital }}</h5>
+                                <p class="mb-1"><strong>District:</strong> {{ r.district }}</p>
+                                <p class="mb-1"><strong>Distance:</strong> {{ r.distance_km }} km</p>
+                                <p class="mb-1"><strong>Score:</strong> {{ r.score }}</p>
+                                <small class="text-muted">{{ r.why }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

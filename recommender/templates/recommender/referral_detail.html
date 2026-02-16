@@ -1,0 +1,126 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Referral Details - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-file-medical icon"></i>Referral Details</h2>
+        <p class="text-muted">Complete referral information</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        {% if user.role == 'gp' %}
+            <a href="{% url 'gp_referral_history' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to My Referrals
+            </a>
+        {% elif user.role == 'hospital' %}
+            <a href="{% url 'hospital_referrals' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Hospital Referrals
+            </a>
+        {% else %}
+            <a href="{% url 'admin_referrals' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to All Referrals
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Patient Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Name:</strong> {{ referral.patient_name }}</p>
+                        <p><strong>Age:</strong> {{ referral.patient_age }} years</p>
+                        <p><strong>Problem:</strong> {{ referral.patient_problem }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Location:</strong> {{ referral.patient_upazila }}, {{ referral.patient_district }}</p>
+                        <p><strong>Department:</strong> {{ referral.department|title }}</p>
+                        <p><strong>Emergency Level:</strong>
+                            {% if referral.emergency_level == 0 %}
+                                Normal
+                            {% elif referral.emergency_level == 1 %}
+                                Level 1
+                            {% elif referral.emergency_level == 2 %}
+                                Level 2
+                            {% else %}
+                                Level 3
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Referral Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Referral ID:</strong> #{{ referral.id }}</p>
+                <p><strong>Date:</strong> {{ referral.created_at|date:"M d, Y H:i" }}</p>
+                <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>Referring GP</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ referral.gp.get_full_name }}</p>
+                <p><strong>Phone:</strong> {{ referral.gp.phone }}</p>
+                <p><strong>Email:</strong> {{ referral.gp.email }}</p>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>Referred Hospital</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ referral.hospital.name }}</p>
+                <p><strong>Location:</strong> {{ referral.hospital.upazila }}, {{ referral.hospital.district }}</p>
+                <p><strong>Phone:</strong> {{ referral.hospital.phone }}</p>
+                <p><strong>Email:</strong> {{ referral.hospital.email }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.role == 'gp' %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Actions</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Referral Slip
+                    </button>
+                    <button class="btn btn-success ms-2" onclick="downloadPDF()">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<script>
+function downloadPDF() {
+    // This would integrate with PDF generation library
+    alert('PDF download functionality will be implemented');
+}
+</script>
+{% endblock %}

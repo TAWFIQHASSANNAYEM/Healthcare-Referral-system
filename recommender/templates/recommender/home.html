@@ -1,0 +1,111 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Home - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-4"><i class="fas fa-hospital-alt icon"></i>Welcome to Healthcare Referral System</h1>
+        <p class="lead">Connecting patients with the right healthcare facilities in Bangladesh</p>
+        {% if not user.is_authenticated %}
+            <div class="mt-4">
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg me-3"><i class="fas fa-user-plus"></i> Join as GP/Hospital</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg me-3"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="{% url 'guest_search' %}" class="btn btn-outline-light btn-lg"><i class="fas fa-search"></i> Search Hospitals</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">For General Practitioners</h5>
+                <p class="card-text">Register your practice, search for suitable hospitals, and create referrals for your patients with AI assistance.</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-primary">Register as GP</a>
+                {% elif user.role == 'gp' %}
+                    <a href="{% url 'gp_dashboard' %}" class="btn btn-primary">GP Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-hospital fa-3x text-success mb-3"></i>
+                <h5 class="card-title">For Hospitals</h5>
+                <p class="card-text">Manage your hospital information, update capacity, and receive patient referrals from GPs.</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-success">Register Hospital</a>
+                {% elif user.role == 'hospital' %}
+                    <a href="{% url 'hospital_dashboard' %}" class="btn btn-success">Hospital Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-search fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Public Access</h5>
+                <p class="card-text">Search for hospitals by department and location. View availability and contact information.</p>
+                <a href="{% url 'guest_search' %}" class="btn btn-info">Search Hospitals</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle icon"></i>About the System</h5>
+            </div>
+            <div class="card-body">
+                <p>Our AI-powered healthcare referral system helps General Practitioners find the most suitable hospitals for their patients based on:</p>
+                <ul>
+                    <li>Medical department requirements</li>
+                    <li>Patient location and distance</li>
+                    <li>Hospital capacity and emergency services</li>
+                    <li>Real-time availability</li>
+                </ul>
+                <p>The system ensures patients receive timely care at appropriate facilities across Bangladesh.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line icon"></i>System Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-primary">{{ hospital_count|default:0 }}</h3>
+                        <p>Hospitals</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-success">{{ gp_count|default:0 }}</h3>
+                        <p>Registered GPs</p>
+                    </div>
+                </div>
+                <div class="row text-center mt-3">
+                    <div class="col-6">
+                        <h3 class="text-info">{{ referral_count|default:0 }}</h3>
+                        <p>Referrals Made</p>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-warning">{{ district_count|default:0 }}</h3>
+                        <p>Districts Covered</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

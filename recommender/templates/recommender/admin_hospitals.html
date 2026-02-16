@@ -1,0 +1,69 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Admin - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-hospital"></i> Hospital Management</h4>
+                </div>
+                <div class="card-body">
+                    {% if hospitals %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Hospital Name</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Beds</th>
+                                    <th>Emergency</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for hospital in hospitals %}
+                                <tr>
+                                    <td>{{ hospital.name }}</td>
+                                    <td>{{ hospital.upazila }}, {{ hospital.district }}</td>
+                                    <td>
+                                        {% if hospital.approval_status == 'approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                        {% elif hospital.approval_status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ hospital.vacant_beds }}/{{ hospital.total_beds }}</td>
+                                    <td>
+                                        {% if hospital.has_emergency %}
+                                        <span class="badge bg-danger">Level {{ hospital.emergency_level }}</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-hospital fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No hospitals registered</h5>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

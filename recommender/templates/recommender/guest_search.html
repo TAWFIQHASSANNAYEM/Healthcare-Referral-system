@@ -1,0 +1,128 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Search Hospitals - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-search icon"></i>Find Hospitals</h4>
+                <p class="mb-0 text-muted">Search for healthcare facilities by department and location</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select name="department" id="department" class="form-select" required>
+                                <option value="">Select Department</option>
+                                {% for code, name in departments %}
+                                    <option value="{{ code }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="upazila" class="form-label">Upazila/Thana</label>
+                            <input type="text" name="upazila" id="upazila" class="form-control" placeholder="Enter Upazila or Thana" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="emergency_level" class="form-label">Emergency Level</label>
+                            <select name="emergency_level" id="emergency_level" class="form-select">
+                                <option value="0">Normal</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i> Search Hospitals</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if error %}
+    <div class="alert alert-danger mt-4" role="alert">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+{% endif %}
+
+{% if results %}
+    <div class="mt-5">
+        <h3 class="text-center mb-4"><i class="fas fa-list icon"></i>Recommended Hospitals</h3>
+        <div class="row">
+            {% for r in results %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-hospital icon"></i>{{ r.hospital }}</h5>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="mb-1"><strong>District:</strong> {{ r.district }}</p>
+                                    <p class="mb-1"><strong>Distance:</strong> {{ r.distance_km }} km</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="mb-1"><strong>Score:</strong> {{ r.score }}</p>
+                                    <small class="text-muted">{{ r.why }}</small>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="text-center">
+                                <button class="btn btn-outline-primary btn-sm" onclick="showHospitalDetails('{{ r.hospital }}')">
+                                    <i class="fas fa-info-circle"></i> View Details
+                                </button>
+                                {% if user.is_authenticated and user.role == 'gp' %}
+                                    <a href="{% url 'create_referral' %}?hospital={{ r.hospital }}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus"></i> Create Referral
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Hospital Details Modal -->
+<div class="modal fade" id="hospitalModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-hospital icon"></i>Hospital Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="hospitalDetails">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function showHospitalDetails(hospitalName) {
+    // This would typically make an AJAX call to get hospital details
+    // For now, we'll show a placeholder
+    document.getElementById('hospitalDetails').innerHTML = `
+        <div class="text-center">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Loading hospital details...</p>
+        </div>
+    `;
+    // Show modal
+    var modal = new bootstrap.Modal(document.getElementById('hospitalModal'));
+    modal.show();
+}
+</script>
+{% endblock %}
+{% endblock %}

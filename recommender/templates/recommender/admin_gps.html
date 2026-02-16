@@ -1,0 +1,68 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Manage GPs - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-user-md icon"></i>Manage General Practitioners</h2>
+        <p class="text-muted">View and manage registered GPs</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>All General Practitioners</h5>
+            </div>
+            <div class="card-body">
+                {% if gps %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>License Number</th>
+                                    <th>Specialization</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for gp in gps %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ gp.user.get_full_name }}</strong>
+                                                <br><small class="text-muted">{{ gp.user.email }}</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-{% if gp.approval_status == 'approved' %}success{% elif gp.approval_status == 'pending' %}warning{% else %}danger{% endif %}">
+                                                    {{ gp.approval_status|title }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No GPs registered yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

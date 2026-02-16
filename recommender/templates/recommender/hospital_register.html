@@ -1,0 +1,166 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Hospital Registration - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4><i class="fas fa-hospital icon"></i>Hospital Registration</h4>
+                <p class="text-muted">Register your hospital to receive patient referrals</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <h5 class="mb-3">Account Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Username *</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password1" class="form-label">Password *</label>
+                            <input type="password" class="form-control" id="password1" name="password1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="password2" class="form-label">Confirm Password *</label>
+                            <input type="password" class="form-control" id="password2" name="password2" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Contact Phone *</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                    </div>
+
+                    <h5 class="mb-3">Hospital Information</h5>
+                    <div class="mb-3">
+                        <label for="hospital_name" class="form-label">Hospital Name *</label>
+                        <input type="text" class="form-control" id="hospital_name" name="hospital_name" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="division" class="form-label">Division *</label>
+                            <input type="text" class="form-control" id="division" name="division" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="district" class="form-label">District *</label>
+                            <input type="text" class="form-control" id="district" name="district" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="upazila" class="form-label">Upazila *</label>
+                            <input type="text" class="form-control" id="upazila" name="upazila" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" step="0.000001" class="form-control" id="latitude" name="latitude" placeholder="e.g., 23.8103">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" step="0.000001" class="form-control" id="longitude" name="longitude" placeholder="e.g., 90.4125">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website</label>
+                        <input type="url" class="form-control" id="website" name="website" placeholder="https://www.hospital.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Full Address *</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    </div>
+
+                    <h5 class="mb-3">Capacity Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="total_beds" class="form-label">Total Beds</label>
+                            <input type="number" class="form-control" id="total_beds" name="total_beds" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="vacant_beds" class="form-label">Vacant Beds</label>
+                            <input type="number" class="form-control" id="vacant_beds" name="vacant_beds" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="icu_beds" class="form-label">ICU Beds</label>
+                            <input type="number" class="form-control" id="icu_beds" name="icu_beds" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="available_icu_beds" class="form-label">Available ICU Beds</label>
+                            <input type="number" class="form-control" id="available_icu_beds" name="available_icu_beds" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="accepting_referrals" name="accepting_referrals" checked>
+                                <label class="form-check-label" for="accepting_referrals">
+                                    Accepting Patient Referrals
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="has_emergency" name="has_emergency">
+                                <label class="form-check-label" for="has_emergency">
+                                    Has Emergency Services
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="emergency_level" class="form-label">Emergency Level (0-3)</label>
+                        <select class="form-control" id="emergency_level" name="emergency_level">
+                            <option value="0">No Emergency Services</option>
+                            <option value="1">Basic Emergency Care</option>
+                            <option value="2">Advanced Emergency Care</option>
+                            <option value="3">Full Trauma Center</option>
+                        </select>
+                    </div>
+
+                    <h5 class="mb-3">Available Departments</h5>
+                    <div class="row">
+                        {% for dept_code, dept_name in departments %}
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="dept_{{ dept_code }}" name="dept_{{ dept_code }}">
+                                <label class="form-check-label" for="dept_{{ dept_code }}">
+                                    {{ dept_name }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-grid mt-4 mb-3">
+                        <button type="submit" class="btn btn-success btn-lg">Register Hospital</button>
+                    </div>
+                </form>
+
+                <hr>
+                <div class="text-center">
+                    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                    <p>Register as a <a href="{% url 'gp_register' %}">GP</a> instead</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

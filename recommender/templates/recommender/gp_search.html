@@ -1,0 +1,116 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Search Hospitals - GP Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-search icon"></i>Search Hospitals</h2>
+        <p class="text-muted">Find suitable hospitals for your patient referrals</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Hospital Search</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select name="department" id="department" class="form-select" required>
+                                {% for dept_code, dept_name in departments %}
+                                    <option value="{{ dept_code }}">{{ dept_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="upazila" class="form-label">Patient Location (Upazila)</label>
+                            <input type="text" name="upazila" id="upazila" class="form-control" placeholder="Enter Upazila or Thana" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="emergency_level" class="form-label">Emergency Level</label>
+                            <select name="emergency_level" id="emergency_level" class="form-select">
+                                <option value="0">Normal</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Search Hospitals
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Total Referrals:</strong> {{ user.referral_count|default:0 }}
+                </div>
+                <div class="mb-3">
+                    <strong>This Month:</strong> {{ user.this_month_count|default:0 }}
+                </div>
+                <div class="mb-3">
+                    <strong>Unique Hospitals:</strong> {{ user.unique_hospitals|default:0 }}
+                </div>
+                <a href="{% url 'gp_dashboard' %}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="fas fa-tachometer-alt"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if error %}
+    <div class="alert alert-danger mt-4" role="alert">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+{% endif %}
+
+{% if results %}
+    <div class="mt-5">
+        <h3 class="mb-4"><i class="fas fa-list icon"></i>Recommended Hospitals</h3>
+        <div class="row">
+            {% for r in results %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-hospital icon"></i>{{ r.hospital }}
+                            </h5>
+                            <p class="card-text">
+                                <strong>District:</strong> {{ r.district }}<br>
+                                <strong>Distance:</strong> {{ r.distance_km }} km<br>
+                                <strong>Score:</strong> {{ r.score }}<br>
+                                <small class="text-muted">{{ r.why }}</small>
+                            </p>
+                            <a href="{% url 'create_referral' %}?hospital={{ r.hospital_id }}" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Create Referral
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

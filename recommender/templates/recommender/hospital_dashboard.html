@@ -1,0 +1,191 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Hospital Dashboard - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="fas fa-hospital-alt icon"></i>Hospital Dashboard</h2>
+        <p class="text-muted">Manage your hospital information and view referrals</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                <h4>{{ hospital.total_beds }}</h4>
+                <p class="mb-0">Total Beds</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-bed fa-2x text-success mb-2"></i>
+                <h4>{{ hospital.vacant_beds }}</h4>
+                <p class="mb-0">Vacant Beds</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-procedures fa-2x text-info mb-2"></i>
+                <h4>{{ hospital.icu_beds }}</h4>
+                <p class="mb-0">ICU Beds</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-file-medical fa-2x text-warning mb-2"></i>
+                <h4>{{ total_referrals }}</h4>
+                <p class="mb-0">Total Referrals</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'update_hospital' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-edit"></i> Update Hospital Info
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'hospital_referrals' %}" class="btn btn-info w-100">
+                            <i class="fas fa-file-medical"></i> View Referrals
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <a href="{% url 'profile' %}" class="btn btn-secondary w-100">
+                            <i class="fas fa-user"></i> Update Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hospital Information -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Hospital Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>{{ hospital.name }}</h6>
+                        <p class="mb-1"><strong>Location:</strong> {{ hospital.upazila }}, {{ hospital.district }}, {{ hospital.division }}</p>
+                        <p class="mb-1"><strong>Phone:</strong> {{ hospital.phone }}</p>
+                        <p class="mb-1"><strong>Email:</strong> {{ hospital.email }}</p>
+                        {% if hospital.website %}
+                            <p class="mb-1"><strong>Website:</strong> <a href="{{ hospital.website }}" target="_blank">{{ hospital.website }}</a></p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Accepting Referrals:</strong>
+                            {% if hospital.accepting_referrals %}
+                                <span class="badge bg-success">Yes</span>
+                            {% else %}
+                                <span class="badge bg-danger">No</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-1"><strong>Emergency Services:</strong>
+                            {% if hospital.has_emergency %}
+                                <span class="badge bg-success">Available</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Available</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-1"><strong>Emergency Level:</strong> {{ hospital.emergency_level }}</p>
+                        <p class="mb-1"><strong>Approval Status:</strong>
+                            {% if hospital.approval_status == 'approved' %}
+                                <span class="badge bg-success">Approved</span>
+                            {% elif hospital.approval_status == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-danger">Rejected</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Referrals -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Referrals</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_referrals %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>GP</th>
+                                    <th>Department</th>
+                                    <th>Emergency</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for referral in recent_referrals %}
+                                    <tr>
+                                        <td>{{ referral.patient_name }} ({{ referral.patient_age }})</td>
+                                        <td>{{ referral.gp.get_full_name }}</td>
+                                        <td>{{ referral.department|title }}</td>
+                                        <td>
+                                            {% if referral.emergency_level == 0 %}
+                                                Normal
+                                            {% elif referral.emergency_level == 1 %}
+                                                Level 1
+                                            {% elif referral.emergency_level == 2 %}
+                                                Level 2
+                                            {% else %}
+                                                Level 3
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ referral.created_at|date:"M d, H:i" }}</td>
+                                        <td>
+                                            <a href="{% url 'referral_detail' referral.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{% url 'hospital_referrals' %}" class="btn btn-outline-info">View All Referrals</a>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No recent referrals</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

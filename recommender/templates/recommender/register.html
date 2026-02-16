@@ -1,0 +1,69 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Register - Healthcare Referral System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5">
+                <h2><i class="fas fa-user-plus icon"></i>Join the Healthcare Referral System</h2>
+                <p class="text-muted">Choose your registration type to get started</p>
+            </div>
+
+            <div class="row">
+                <!-- GP Registration Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-user-md fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">General Practitioner</h5>
+                            <p class="card-text text-muted">
+                                Register as a GP to access the referral system, search hospitals, and create patient referrals with AI assistance.
+                            </p>
+                            <ul class="list-unstyled text-left mb-4">
+                                <li><i class="fas fa-check text-success me-2"></i>AI-powered hospital recommendations</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Create and manage referrals</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Generate PDF referral slips</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Access referral history</li>
+                            </ul>
+                            <a href="{% url 'gp_register' %}" class="btn btn-primary btn-lg w-100">
+                                Register as GP
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hospital Registration Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-hospital fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Hospital</h5>
+                            <p class="card-text text-muted">
+                                Register your hospital to receive patient referrals, manage capacity, and participate in the healthcare network.
+                            </p>
+                            <ul class="list-unstyled text-left mb-4">
+                                <li><i class="fas fa-check text-success me-2"></i>Receive patient referrals</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Manage hospital capacity</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Update department availability</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Access referral statistics</li>
+                            </ul>
+                            <a href="{% url 'hospital_register' %}" class="btn btn-success btn-lg w-100">
+                                Register Hospital
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-muted">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

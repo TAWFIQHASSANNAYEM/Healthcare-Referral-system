@@ -1,0 +1,96 @@
+{% extends 'recommender/base.html' %}
+{% block title %}Update Hospital Information{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-edit icon"></i>Update Hospital Information</h4>
+                <p class="text-muted">Update your hospital's capacity and department availability</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <h5 class="mb-3">Capacity Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="total_beds" class="form-label">Total Beds</label>
+                            <input type="number" class="form-control" id="total_beds" name="total_beds" value="{{ hospital.total_beds }}" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="vacant_beds" class="form-label">Vacant Beds</label>
+                            <input type="number" class="form-control" id="vacant_beds" name="vacant_beds" value="{{ hospital.vacant_beds }}" min="0">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="icu_beds" class="form-label">ICU Beds</label>
+                            <input type="number" class="form-control" id="icu_beds" name="icu_beds" value="{{ hospital.icu_beds }}" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="available_icu_beds" class="form-label">Available ICU Beds</label>
+                            <input type="number" class="form-control" id="available_icu_beds" name="available_icu_beds" value="{{ hospital.available_icu_beds }}" min="0">
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3">Services</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="accepting_referrals" name="accepting_referrals" {% if hospital.accepting_referrals %}checked{% endif %}>
+                                <label class="form-check-label" for="accepting_referrals">
+                                    Accepting Patient Referrals
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="has_emergency" name="has_emergency" {% if hospital.has_emergency %}checked{% endif %}>
+                                <label class="form-check-label" for="has_emergency">
+                                    Has Emergency Services
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="emergency_level" class="form-label">Emergency Level</label>
+                        <select class="form-control" id="emergency_level" name="emergency_level">
+                            <option value="0" {% if hospital.emergency_level == 0 %}selected{% endif %}>No Emergency Services</option>
+                            <option value="1" {% if hospital.emergency_level == 1 %}selected{% endif %}>Basic Emergency Care</option>
+                            <option value="2" {% if hospital.emergency_level == 2 %}selected{% endif %}>Advanced Emergency Care</option>
+                            <option value="3" {% if hospital.emergency_level == 3 %}selected{% endif %}>Full Trauma Center</option>
+                        </select>
+                    </div>
+
+                    <h5 class="mb-3">Available Departments</h5>
+                    <div class="row">
+                        {% for dept_code, dept_name in departments %}
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="dept_{{ dept_code }}" name="dept_{{ dept_code }}" {% if hospital|getattr:'dept_'|add:dept_code %}checked{% endif %}>
+                                <label class="form-check-label" for="dept_{{ dept_code }}">
+                                    {{ dept_name }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-grid mt-4 mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">Update Hospital Information</button>
+                    </div>
+                </form>
+
+                <hr>
+                <div class="text-center">
+                    <a href="{% url 'hospital_dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
